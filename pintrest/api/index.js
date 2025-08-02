@@ -1,12 +1,5 @@
-const express = require('express');
-const app = express();
+// Import your main Express app
+var app = require('../app');
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello from Vercel!</h1><p>API is working!</p>');
-});
-
-app.get('*', (req, res) => {
-  res.status(404).send('<h1>404 - Route not found</h1><p>Path: ' + req.path + '</p>');
-});
-
+// Export it for Vercel
 module.exports = app;
