@@ -1,0 +1,50 @@
+# Logs
+# Logs are machine-specific and should not be version controlled.
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+# These are installed by package managers and would bloat the repository.
+# Reinstall them using `npm install` or `yarn install`.
+node_modules/
+jspm_packages/
+
+# Environment variables
+# This file contains sensitive information like database credentials,
+# API keys, and session secrets. It should never be committed to version control.
+# Instead, create a .env.example file with the required variables.
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Compiled files
+# If you are compiling assets (like Tailwind CSS), ignore the output directory/files.
+# Adjust this to match your project's build output.
+/public/stylesheets/style.css
+/dist
+/build
+
+# IDE / Editor specific files
+.idea
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Optional - for coverage reports from testing
+coverage
+.nyc_output
+

@@ -1,0 +1,143 @@
+<% include ./partials/header.ejs %>
+
+<div class="bg-white font-sans">
+    <form id="uploadform" hidden action="/fileupload" method="post" enctype="multipart/form-data">
+        <input type="file" name="image">
+    </form>
+    <!-- Header Navigation -->
+    
+
+    <!-- Profile Section -->
+    <main class="max-w-4xl mx-auto px-4 py-5 ">
+        <!-- Profile Header -->
+      
+        <div class="text-center relative">
+          <button type="submit" id="edit">
+            <span class="w-7 h-7 rounded-full  bg-zinc-700 p-1 absolute top-19 left-110 ">
+         <i class="ri-pencil-line text-white "></i>
+        </span> 
+          </button>
+            <!-- Profile Image -->
+            <div class="w-18 h-18 mx-auto mb-6 rounded-full overflow-hidden bg-gray-200 shadow-lg">
+                <img 
+                    src="/images/uploads/<%= user.profilePicture%>" 
+                    alt="update profile" 
+                    class="w-full h-full object-cover"
+                />
+            </div>
+            
+            <!-- Name -->
+            <h2 class="text-xl font-normal text-gray-900 mb-2"><%= user.username %></h2>
+            
+            <!-- Username -->
+            <div class="flex items-center justify-center mb-2">
+                <i class="fas fa-pinterest text-gray-400 text-sm mr-2"></i>
+                <span class="text-gray-600 text-sm">@<%= user.username %></span>
+            </div>
+            
+            <!-- Followers and Following -->
+            <div class="flex items-center justify-center space-x-6 mb-4">
+                <div class="text-center">
+                    <span class="font-semibold text-gray-900">91</span>
+                    <span class="text-gray-600 ml-1 text-sm">followers</span>
+                </div>
+                <div class="text-center">
+                    <span class="font-semibold text-gray-900">8</span>
+                    <span class="text-gray-600 ml-1 text-sm">following</span>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-center space-x-3 mb-5">
+                <a href="/addpost" class="flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 rounded-full text-white font-medium transition-colors duration-200">
+                    <i class="fas fa-share text-sm"></i>
+                    <span>Add post</span>
+                </a>
+                <a class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 font-medium transition-colors duration-200">
+                    Edit profile
+               </a>
+            </div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <div class="border-b border-gray-200">
+            <div class="flex justify-center">
+                <div class="flex space-x-8">
+                    <button class="pb-4 text-gray-900 font-medium border-b-2 border-gray-900 transition-colors duration-200">
+                        Created
+                    </button>
+                    <button class="pb-4 text-gray-600 font-medium hover:text-gray-900 transition-colors duration-200">
+                        Saved
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+        <div class=" container mx-auto px-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <!-- post image -->
+                <div class="w-full h-48 bg-gray-200">
+                    <img 
+                        src="/images/uploads/<%= user.post.image %>" 
+                        alt="" 
+                        class="w-full h-full object-cover"
+                    />
+                </div> 
+                
+            
+                <div class="p-4">
+                    <!-- post title --> 
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                        <%= user.post.title %>
+                    </h3>
+                    
+                    <!-- Post Description -->
+                     <div id="pins">
+                         <a href="/allpost" class="text-gray-600 text-sm">
+                             <%= user.post.length %>
+                         </a>
+                     </div>
+                
+                </div>
+            </div>
+    </div>
+</div>
+
+    <!-- Responsive Design -->
+    <style>
+        @media (max-width: 768px) {
+            .max-w-4xl {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .w-32.h-32 {
+                width: 6rem;
+                height: 6rem;
+            }
+        }
+    </style>
+    <script>
+        const Editbtn = document.querySelector('main #edit') //edit icon
+        Editbtn.addEventListener('click', function(){
+          document.querySelector('#uploadform input').click()
+        })
+
+        document.querySelector('#uploadform input').addEventListener('change', function(){
+            document.querySelector('#uploadform').submit()
+        })
+        const pins = document.querySelector('.container #pins')
+        pins.addEventListener('click', function(){
+            window.location.href ='/allpost'
+        })
+    </script>
+</div>
+  <% include ./partials/footer.ejs %>

@@ -1,0 +1,55 @@
+<% include ./partials/header.ejs %>
+    <!-- <div class="w-full min-h-screen px-10 flex flex-wrap  mt-4"> -->
+        <div class="min-h-screen bg-gray-50 p-6">
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">My Feed</h1>
+        <p class="text-gray-600">Discover amazing content and stories</p>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <% post.forEach(function(ele){ %>
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                    <!-- Post Image -->
+                    <div class="w-full h-48 bg-gray-200 overflow-hidden">
+                        <img 
+                            src="/images/uploads/<%= ele.image %>" 
+                            alt="Post Image" 
+                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                    </div>
+                    
+                    <!-- Post Content -->
+                    <div class="p-5">
+                        <!-- Post Title -->
+                        <h2 class="text-lg font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors">
+                            <%= ele.title %>
+                        </h2>
+                        
+                        <!-- Post Description -->
+                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
+                            <%= ele.description %>
+                        </p>
+
+                        <!-- Post Meta (Optional) -->
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>Recently</span>
+                            <div class="flex items-center space-x-4">
+                                <span class="flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
+                                    </svg>
+                                    <span class="text-red-500">♥</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+    <!-- </div> -->
+  <% include ./partials/footer.ejs %>
