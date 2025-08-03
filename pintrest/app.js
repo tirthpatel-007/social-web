@@ -8,14 +8,13 @@ const flash = require('connect-flash');
 const passport = require('passport');
 
 // --- 1. CONNECT TO THE DATABASE ---
-// This line imports and runs your database connection logic.
 const connectDB = require('./config/db');
 connectDB();
-// ---
 
+// --- 2. REQUIRE ROUTERS ---
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var postRouter = require('./routes/post'); // Make sure you have this line
+var postRouter = require('./routes/post');
 
 var app = express();
 
@@ -23,6 +22,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// --- 3. SETUP MIDDLEWARE ---
 app.use(flash());
 app.use(session({
   resave: false,
@@ -30,6 +30,7 @@ app.use(session({
   secret: "hey hey hey"
 }));
 
+// Passport setup
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(usersRouter.serializeUser());
@@ -41,10 +42,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter.router); // Use the exported router
-app.use('/post', postRouter); // Make sure you have this line
 
+// --- 4. USE ROUTERS (THIS IS THE CORRECTED PART) ---
+app.use('/', indexRouter);
+app.use('/users', usersRouter.router); // FIX: Use usersRouter.router here
+app.use('/post', postRouter);           // FIX: This line was missing
+
+
+// --- 5. ERROR HANDLERS ---
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
