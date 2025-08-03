@@ -27,7 +27,7 @@ app.use(flash());
 app.use(session({
   resave: false,
   saveUninitialized: false,
-  secret: "hey hey hey"
+  secret: process.env.SESSION_SECRET
 }));
 
 // Passport setup
