@@ -31,11 +31,11 @@ app.use(session({
   saveUninitialized: false,
   secret: "hohoho"
 }))
-app.use(flash());
 app.use(passport.initialize())
 app.use(passport.session())
 passport.serializeUser(usersRouter.serializeUser())
 passport.deserializeUser(usersRouter.deserializeUser())
+app.use(flash());
 
 app.use(logger('dev'));
 app.use(express.json());
