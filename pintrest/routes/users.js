@@ -1,37 +1,49 @@
-const mongoose = require("mongoose");
-const plm = require('passport-local-mongoose')
-mongoose.connect(process.env.MONGO_URL);
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const passport = require('passport');
+const localStrategy = require('passport-local');
+const passportLocalMongoose = require('passport-local-mongoose'); // This line is now added
 
-const user = mongoose.Schema({
+// Your user schema and model definition
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-     sparse: true
-  },
-  email: {
-    type: String,
-    required: true
+    unique: true,
   },
   password: {
     type: String,
   },
-  post:[{
+  posts: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'
   }],
-  contact:{
-    type: Number,
-  },
-  googleId: {
-        type: String,
-        unique: true,
-        sparse: true
-    },
-  profilePicture: {
+  dp: {
     type: String, 
-    default: ""
   },
-
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  fullname: {
+    type: String,
+    required: true,
+  },
 });
-user.plugin(plm)
-module.exports = mongoose.model('User', user)
+
+userSchema.plugin(passportLocalMongoose);
+
+const userModel = mongoose.model("user", userSchema);
+
+// This tells Passport to use the userModel for its local strategy
+passport.use(new localStrategy(userModel.authenticate()));
+
+// Export everything needed
+module.exports = {
+  router: router,
+  model: userModel,
+  serializeUser: userModel.serializeUser(),
+  deserializeUser: userModel.deserializeUser()
+};

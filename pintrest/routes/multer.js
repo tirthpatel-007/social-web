@@ -1,5 +1,4 @@
 
-mongoose.connect(process.env.MONGO_URL);
 const multer = require('multer')
 const {v4: uuidv4} = require('uuid')
 const path = require('path')
