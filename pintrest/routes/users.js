@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
+    
   },
   password: {
     type: String,
@@ -25,11 +25,10 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
+    
   },
   fullname: {
     type: String,
-    required: true,
   },
 });
 
@@ -37,10 +36,10 @@ userSchema.plugin(passportLocalMongoose);
 
 const userModel = mongoose.model("user", userSchema);
 
-// This tells Passport to use the userModel for its local strategy
+
 passport.use(new localStrategy(userModel.authenticate()));
 
-// Export everything needed
+
 module.exports = {
   router: router,
   model: userModel,
