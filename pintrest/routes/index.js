@@ -27,33 +27,59 @@ async (email, password, done) => {
 }));
 
 
+// Inside routes/index.js
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET, 
-    callbackURL: "http://localhost:3000/auth/google/callback" 
-},
-async (accessToken, refreshToken, profile, done) => {
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback",
+    scope: ['profile', 'email']
+  },
+  async function(accessToken, refreshToken, profile, done) {
     try {
-        let user = await usermodel.findOne({ googleId: profile.id });
+      // 1. Try to find a user with the matching Google ID
+      let user = await usermodel.findOne({ googleId: profile.id });
 
-        if (user) {
+      // If user with Google ID exists, log them in
+      if (user) {
+        return done(null, user);
+      }
 
-            return done(null, user);
-        } else {
-       
-            user = new usermodel({
-                googleId: profile.id,
-                username: profile.displayName || profile.emails[0].value.split('@')[0], 
-                email: profile.emails[0].value,
-                profilePicture: profile.photos[0].value 
-            });
-            await user.save();
-            return done(null, user);
+      // 2. If no user with Google ID, check if a user with that email exists
+      user = await usermodel.findOne({ email: profile.emails[0].value });
+
+      // If user with that email exists, link their Google ID and log them in
+      if (user) {
+        user.googleId = profile.id; // Link the account
+        await user.save();
+        return done(null, user);
+      } 
+      
+      // 3. If no user exists with that Google ID or email, create a new one
+      else {
+        // We still check for username collisions just in case
+        let potentialUsername = profile.displayName.replace(/\s/g, '').toLowerCase();
+        let existingUser = await usermodel.findOne({ username: potentialUsername });
+        if (existingUser) {
+            potentialUsername += Math.floor(Math.random() * 10000);
         }
-    } catch (err) {
-        return done(err, null);
+
+        const newUser = new usermodel({
+            googleId: profile.id,
+            username: potentialUsername,
+            email: profile.emails[0].value,
+            fullname: profile.displayName,
+            profilePicture: profile.photos[0].value
+        });
+
+        await newUser.save();
+        return done(null, newUser);
+      }
+    } catch (error) {
+      return done(error, null);
     }
-}));
+  }
+));
 
 // Serialize and deserialize user for session management
 passport.serializeUser(function(user, done) {
@@ -95,7 +121,7 @@ router.get('/addpost', isloggedin, function(req, res) {
 router.get('/allpost', isloggedin, async function(req, res, next) {
     const user = await usermodel.findOne({
         _id: req.user._id 
-    }).populate('Post');
+    }).populate('posts');
     res.render('allpost', { user, nav: true });
 });
 
@@ -103,7 +129,10 @@ router.get('/feed', isloggedin, async function(req, res, next) {
     const user = await usermodel.findOne({
         _id: req.user._id 
     });
-    const post = await postmodel.find().limit(6).populate('user');
+    const post = await postmodel
+    .find()
+    .limit(6)
+    .populate('user');
     console.log(user);
     res.render('feed', { user, post, nav: true });
 });
@@ -120,20 +149,18 @@ router.get("/logout", function(req, res, next) {
 router.get('/profile', isloggedin, async function(req, res) {
     const user = await usermodel.findOne({
         _id: req.user._id 
-    }).populate('Post');
+    }).populate('posts');
     res.render('profile', { user, nav: true });
 });
 
-
+// this is google auth 
 router.get('/auth/google',
     passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-    // google login  route
+ 
 router.get('/auth/google/callback',
     passport.authenticate('google',
       { failureRedirect: '/login' }),
     function(req, res) {
-        // Successful authentication, redirect to profile.
         res.redirect('/profile');
     });
 
@@ -177,7 +204,7 @@ router.post('/fileupload', isloggedin, upload.single('image'), async(req, res) =
         }
 
         const user = await usermodel.findOne({
-            _id: req.user._id // Use req.user._id
+            _id: req.user._id
         });
 
         if (!user) {
@@ -186,7 +213,7 @@ router.post('/fileupload', isloggedin, upload.single('image'), async(req, res) =
                 message: 'User not found'
             });
         }
-
+                    
         user.profilePicture = req.file.filename;
         await user.save();
 
@@ -235,7 +262,7 @@ router.post('/createpost', isloggedin, upload.single('image'), async function(re
             user: user._id
         });
 
-        user.post.push(post._id);
+        user.posts.push(post._id);
         await user.save();
 
         console.log('Post created successfully:', post);

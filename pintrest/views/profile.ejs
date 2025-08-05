@@ -81,7 +81,7 @@
                 <!-- post image -->
                 <div class="w-full h-48 bg-gray-200">
                     <img 
-                        src="/images/uploads/<%= user.post.image %>" 
+                        src="/images/uploads/<%= user.posts.image %>" 
                         alt="" 
                         class="w-full h-full object-cover"
                     />
@@ -91,13 +91,13 @@
                 <div class="p-4">
                     <!-- post title --> 
                     <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                        <%= user.post.title %>
+                        <%= user.posts.title %>
                     </h3>
                     
                     <!-- Post Description -->
                      <div id="pins">
                          <a href="/allpost" class="text-gray-600 text-sm">
-                             <%= user.post.length %>
+                             <%= user.posts.length %>
                          </a>
                      </div>
                 
