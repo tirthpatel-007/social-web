@@ -1,4 +1,4 @@
-require('dotenv').config(); 
+require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 const passport = require('passport');
@@ -213,7 +213,7 @@ router.post('/fileupload', isloggedin, upload.single('image'), async(req, res) =
                 message: 'User not found'
             });
         }
-                    
+
         user.profilePicture = req.file.filename;
         await user.save();
 

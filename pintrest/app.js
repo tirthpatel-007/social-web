@@ -7,7 +7,7 @@ var logger = require('morgan');
 var session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
-const port = 2000
+// const port = 2000
 
 // Connect to the database
 const connectDB = require('./config/db');
@@ -65,9 +65,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`)
+// })
 
 
 module.exports = app;
