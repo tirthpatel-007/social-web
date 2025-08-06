@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "build-css": "postcss public/stylesheets/input.css -o public/stylesheets/style.css",
     "watch-css": "postcss public/stylesheets/input.css -o public/stylesheets/style.css --watch"
   },
