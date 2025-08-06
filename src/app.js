@@ -16,8 +16,8 @@ connectDB();
 
 // Require Routers
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var postRouter = require('./routes/post');
+var usersRouter = require('./routes/models/users');
+var postRouter = require('./routes/models/post');
 
 var app = express();
 
