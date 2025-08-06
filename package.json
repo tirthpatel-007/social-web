@@ -9,6 +9,7 @@
     "watch-css": "postcss public/stylesheets/input.css -o public/stylesheets/style.css --watch"
   },
   "dependencies": {
+    "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -20,6 +21,7 @@
     "mongoose": "^8.16.5",
     "morgan": "~1.9.1",
     "multer": "^2.0.2",
+    "multer-storage-cloudinary": "^4.0.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",

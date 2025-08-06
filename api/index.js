@@ -4,6 +4,8 @@ require('dotenv').config();
 // Import the configured Express app from your src folder
 const app = require('../src/app.js');
 
+const app = require('../index');
+
 // Import and run the database connection
 const connectDB = require('../src/config/db.js');
 connectDB();

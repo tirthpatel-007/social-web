@@ -1,17 +1,40 @@
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-const multer = require('multer')
-const {v4: uuidv4} = require('uuid')
-const path = require('path')
-    
-const storage = multer.diskStorage({
-    destination: function(req,file,cb){
-        cb(null,'./src/public/images/uploads')
-    },
-    filename: function(req,file,cb){
-        const uniqueFilename = uuidv4();
-        cb(null, uniqueFilename + path.extname(file.originalname))
-    }
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-const upload = multer({storage: storage}); 
 
-module.exports = upload 
+// Configure Cloudinary Storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'pinterest-clone', // Folder name in Cloudinary
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
+    transformation: [
+      { width: 800, height: 600, crop: 'limit' }, // Resize images
+      { quality: 'auto' } // Auto quality optimization
+    ]
+  },
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: function (req, file, cb) {
+    // Check file type
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
+
+module.exports = upload;
