@@ -1,46 +1,61 @@
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const session = require('express-session');
-const flash = require('connect-flash');
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const expressSession = require('express-session');
 const passport = require('passport');
+const flash = require('connect-flash');
 
-// Require Routers from the new location
-const indexRouter = require('./routes/index');
+// Import route files
+var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');      // NEW
+var usersRouter = require('./routes/user');    // NEW  
+var postsRouter = require('./routes/post');    // NEW
 
-const app = express();
+var app = express();
 
-// View engine setup - point to the new views directory
+// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-// Setup Middleware
-app.use(flash());
-app.use(session({
-  resave: false,
-  saveUninitialized: false,
-  secret: process.env.SESSION_SECRET || "a default secret for local dev"
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-// We will set up passport strategies in a separate config file later if needed
-// For now, let's keep it simple. The logic will be in the routes/controllers.
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve static files from the root `public` folder
-app.use(express.static(path.join(__dirname, '../public')));
+// Session configuration
+app.use(expressSession({
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET || "default_secret"
+}));
 
-// Use Routers
-app.use('/', indexRouter);
+// Passport configuration
+app.use(passport.initialize());
+app.use(passport.session());
 
+// Flash messages
+app.use(flash());
 
-// This file should NOT start the server.
-// It should only configure and export the app.
+// Use routes
+app.use('/', indexRouter);     // Main routes (home, feed)
+app.use('/', authRouter);      // Auth routes (login, register, logout)
+app.use('/', usersRouter);     // User routes (profile, upload)
+app.use('/', postsRouter);     // Post routes (create, delete, view posts)
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.status(err.status || 500);
+  res.render('error');
+});
+
 module.exports = app;

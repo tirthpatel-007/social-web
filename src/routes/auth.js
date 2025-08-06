@@ -1,14 +1,17 @@
+require("dotenv").config();
 var express = require("express");
-const router = express.Router();
+var router = express.Router();
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
-const usermodel = require("../../models/users");
-const postmodel = require("../../models/post");
+const GoogleStrategy = require("../middlewares/googleAuth");
+const LocalStrategy = require('../middlewares/localAuth').Strategy;
+const usermodel = require("../models/users").model;
 
+// GET routes for auth
 router.get("/login", function (req, res) {
   res.render("login", { nav: false });
 });
 
+// Google Auth Routes
 router.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
@@ -21,7 +24,18 @@ router.get(
     res.redirect("/profile");
   }
 );
-// this is passport local auth register api
+
+// GET logout
+router.get("/logout", function(req, res, next) {
+  req.logout(function(err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/login");
+  });
+});
+
+// POST routes for auth
 router.post("/register", function (req, res) {
   const { username, email, password, contact } = req.body;
 
@@ -34,7 +48,7 @@ router.post("/register", function (req, res) {
   usermodel.register(users, password, (err, user) => {
     if (err) {
       console.error("Error during local registration:", err);
-      return res.redirect("/"); // Or render a registration error message
+      return res.redirect("/"); 
     }
 
     passport.authenticate("local")(req, res, () => {
@@ -42,13 +56,13 @@ router.post("/register", function (req, res) {
     });
   });
 });
-// this is passport local auth register api
+
 router.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/profile",
     failureRedirect: "/login",
-    failureFlash: true, // If you're using connect-flash, ensure this is enabled in your app.js
+    failureFlash: true,
   }),
   function (req, res) {}
 );

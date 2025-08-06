@@ -31,6 +31,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     
   },
+  contact:{
+    type: Number
+  },
   profilePicture: {
     type: String
   },
