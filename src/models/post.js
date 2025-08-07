@@ -7,7 +7,7 @@ const post = mongoose.Schema({
     required: true,
   },
   image: {
-    type: String, // Optional image (URL or path)
+    type: String,
     default: "",
   },
   title: {

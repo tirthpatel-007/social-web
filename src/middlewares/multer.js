@@ -16,7 +16,7 @@ const storage = new CloudinaryStorage({
     allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
     transformation: [
       { width: 800, height: 600, crop: 'limit' }, // Resize images
-      { quality: 'auto' } // Auto quality optimization
+      { quality: 'auto' } 
     ]
   },
 });
