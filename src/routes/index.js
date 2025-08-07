@@ -15,7 +15,7 @@ router.get("/feed", isloggedin, async function (req, res, next) {
     const user = await usermodel.findOne({
       _id: req.user._id,
     });
-    const post = await postmodel.find().limit(6).populate("user");
+    const post = await postmodel.find().limit(50).populate("user");
     res.render("feed", { user, post, nav: true });
   } catch (error) {
     next(error);
